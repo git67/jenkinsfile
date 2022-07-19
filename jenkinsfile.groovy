@@ -1,4 +1,4 @@
-def branch = 'features/us7'
+def branch = 'master'
 def work_dir = './tf'
 def ansible_dir = './ansible'
 def git_repo = 'https://github.com/git67/terraform.git'

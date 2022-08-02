@@ -39,7 +39,7 @@ pipeline {
         label 'dev-build'
         }
     stages {
-        stage('pre stage - clear env') {
+        stage('pre stage - cleanup environment') {
             steps {
                 timeout(time: 1, unit: 'MINUTES') {
                     echoBanner("pre clear env")

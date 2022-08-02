@@ -39,7 +39,7 @@ pipeline {
         label 'dev-build'
         }
     stages {
-        stage('pre clear env') {
+        stage('pre stage - clear env') {
             steps {
                 timeout(time: 1, unit: 'MINUTES') {
                     echoBanner("pre clear env")
@@ -50,7 +50,7 @@ pipeline {
                 }
             }
         }
-        stage('check aws connect') {
+        stage('test stage - check aws connect') {
             steps {
                 timeout(time: 2, unit: 'MINUTES') {
                     echoBanner("check aws connect")
@@ -61,7 +61,7 @@ pipeline {
                 }
             }
         }
-        stage('git checkout') {
+        stage('test stage - git checkout source code') {
             steps {
                 timeout(time: 1, unit: 'MINUTES') {
                     echoBanner("git checkout")
@@ -71,7 +71,7 @@ pipeline {
                 }
             }
         }
-        stage('initializing terraform') {
+        stage('deploy stage - initializing terraform') {
             steps {
                 timeout(time: 5, unit: 'MINUTES') {
                     echoBanner("initializing terraform")
@@ -82,7 +82,7 @@ pipeline {
                 }
             }    
         }
-        stage('run terraform plan') {
+        stage('deploy stage - run terraform plan') {
             steps {
                 timeout(time: 2, unit: 'MINUTES') {
                     echoBanner("run terraform plan")
@@ -94,7 +94,7 @@ pipeline {
                 }
             }    
         } 
-        stage('run terraform validate') {
+        stage('deploy stage - run terraform validate') {
             steps {
                 timeout(time: 2, unit: 'MINUTES') {
                     echoBanner("run terraform validate")
@@ -106,7 +106,7 @@ pipeline {
                 }
             }    
         } 
-        stage('run terraform apply') {
+        stage('deploy stage - run terraform apply') {
             steps {
                 timeout(time: 10, unit: 'MINUTES') {
                     echoBanner("run terraform apply")
@@ -118,7 +118,7 @@ pipeline {
                 }
             }    
         } 
-        stage('run ansible syntax-check') {
+        stage('deploy stage - run ansible syntax-check') {
             steps {
                 timeout(time: 2, unit: 'MINUTES') {
                     echoBanner("run ansible syntax-check")
@@ -132,7 +132,7 @@ pipeline {
                 }
             }
         }    
-        stage('run ansible') {
+        stage('deploy stage - run ansible') {
             steps {
                 timeout(time: 10, unit: 'MINUTES') {
                     echoBanner("run ansible")
@@ -145,7 +145,7 @@ pipeline {
                 }
             }    
         } 
-        stage('run probe aws env') {
+        stage('test stage - probe built environment') {
             steps {
                 timeout(time: 5, unit: 'MINUTES') {
                     echoBanner("run probe aws env")
@@ -162,14 +162,24 @@ pipeline {
                 }
             }    
         } 
+        stage('post stage - cleanup environment') {
+            steps {
+                timeout(time: 5, unit: 'MINUTES') {
+                    echoBanner("cleanup")
+                    sh """
+                    cd ${work_dir}
+                    . ./.env
+		    terraform destroy -auto-approve
+                    """
+                }
+            }    
+        } 
     } 
     post {  
          always {  
-            echoBanner("always clear env") 
+            echoBanner("always dummy") 
             sh """
             cd ${work_dir}
-            . ./.env
-            terraform destroy -auto-approve
             """
          }  
          success {  

@@ -169,7 +169,7 @@ pipeline {
                     sh """
                     cd ${work_dir}
                     . ./.env
-		    terraform destroy -auto-approve
+		            terraform destroy -auto-approve
                     """
                 }
             }    
@@ -189,7 +189,15 @@ pipeline {
             subject: "Overall: ${currentBuild.fullDisplayName} Job: ${env.JOB_NAME}",
             body: "Project: ${env.JOB_NAME} \nBuild Number: ${env.BUILD_NUMBER} \nURI build: ${env.BUILD_URL} \nState: ${currentBuild.result}"
          }  
-         failure {  
+         failure {
+            timeout(time: 10, unit: 'MINUTES') {
+                echoBanner("ierror cleanup")
+                sh """
+                cd ${work_dir}
+                . ./.env
+		        terraform destroy -auto-approve
+                """
+                },  
             errorBanner("send error mail") 
             mail to: 'git67@gmx.de',
             charset: 'UTF-8', 

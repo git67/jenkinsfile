@@ -5,7 +5,7 @@ def git_repo = 'https://github.com/git67/terraform.git'
 def credential_id = 'hs-jenkins-terraform'
 def build_name = 'build'
 def build_no = '1'
-def aws_profile = 'devops'
+def aws_profile = 'etomer-dev'
 
 def echoBanner(def ... msgs) {
    echo createBanner(msgs)

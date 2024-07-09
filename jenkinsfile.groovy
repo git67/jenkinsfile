@@ -137,6 +137,7 @@ pipeline {
                 timeout(time: 10, unit: 'MINUTES') {
                     echoBanner("run ansible")
                     sh """
+		    sleep 60
                     cd ${ansible_dir}
                     . ./.env
                     _create_ansible_user
